@@ -6,6 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Detector } from "react-detect-offline";
 import Sound from 'react-sound';
 
+const __DEV__ = !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
+
 class App extends Component {
   state = {
     data: [],
@@ -44,7 +46,7 @@ class App extends Component {
       }
     };
 
-    request.open('GET', 'http://localhost:1323/user_with_most_chop');
+    request.open('GET', (__DEV__ ? 'http://localhost:1323' : '') + '/user_with_most_chop');
     request.send();
   }
   render() {
@@ -62,7 +64,7 @@ class App extends Component {
             onFinishedPlaying={() => this.setState({ isSoundAlert: false })}
           />
         }
-        <Detector polling={{ url: 'https://api.rewards.nexlife.com.my/timestamp', enabled: true }} render={({ online: isOnline }) => {
+        <Detector polling={{ url: (__DEV__ ? 'https://api.rewards.nexlife.com.my' : '') + '/timestamp', enabled: true }} render={({ online: isOnline }) => {
           if (isOnline) return false
           return <div style={{ position: 'absolute', top: 0, alignSelf: 'center', left: 0, right: 0, height: 50, backgroundColor: 'red', color: 'white', alignItems: 'center', justifyContent: 'center' }}> Opps, you are offline</div>
         }} />
