@@ -2,6 +2,7 @@
   "name": "react-leaderboard",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://fattahmuhyiddeen.github.io/public/html/leaderboard",
   "dependencies": {
     "react": "^16.6.3",
     "react-detect-offline": "^2.1.2",
