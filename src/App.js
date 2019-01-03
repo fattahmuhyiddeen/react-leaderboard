@@ -7,19 +7,55 @@ import { Detector } from "react-detect-offline";
 import Sound from 'react-sound';
 
 const __DEV__ = !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
-
+const offlineStyle = { position: 'absolute', top: 0, alignSelf: 'center', left: 0, right: 0, height: 50, backgroundColor: 'red', color: 'white', alignItems: 'center', justifyContent: 'center' }
+const log = (msg) => {
+  if (__DEV__) console.log(msg)
+}
 class App extends Component {
   state = {
     data: [],
-    isSoundAlert: false
+    isSoundAlert: false,
   }
   constructor(p) {
     super(p)
     this.getDataFromApi()
-    setInterval(this.getDataFromApi, 10000)
+  }
+
+  ws
+  listenToWS = () => {
+    log("reconnect to websocket")
+    const loc = window.location;
+    let uri = 'ws:';
+
+    if (loc.protocol === 'https:') {
+      uri = 'wss:';
+    }
+    uri += '//' + loc.host;
+    uri += loc.pathname + 'ws';
+
+    uri += "/listen"
+
+    this.ws = new WebSocket(__DEV__ ? 'ws://localhost:1323/listen' : uri)
+    // ws = new WebSocket(uri)
+
+    this.ws.onopen = () => {
+      log('Connected')
+      this.getDataFromApi()
+    }
+
+    this.ws.onmessage = (evt) => {
+      if (evt.data === 'refreshLeaderboard') {
+        this.getDataFromApi()
+      }
+    }
+
+    // setInterval( ()=> {
+    //   this.ws.send('Hello, Server!');
+    // }, 1000);
   }
 
   getDataFromApi = () => {
+    log('restart websocket')
     var request = new XMLHttpRequest();
     request.onreadystatechange = (e) => {
       if (request.readyState !== 4) {
@@ -33,7 +69,7 @@ class App extends Component {
         toast.dismiss();
         toast.success("Table refreshed !", {
           position: toast.POSITION.BOTTOM_RIGHT,
-          pauseOnFocusLoss: true
+          // pauseOnFocusLoss: true
         });
       } else {
         toast.dismiss();
@@ -41,13 +77,26 @@ class App extends Component {
 
         toast.error("Cannot get data", {
           position: toast.POSITION.BOTTOM_RIGHT,
-          pauseOnFocusLoss: true
+          // pauseOnFocusLoss: true
         });
+
+        if (this.isOnline) {
+          this.getDataFromApi()
+        }
       }
     };
 
     request.open('GET', (__DEV__ ? 'http://localhost:1323' : '') + '/user_with_most_chop');
     request.send();
+  }
+  isOnline = false
+  setConnectivityStatus = (isOnline) => {
+    log('system is ' + (isOnline ? 'online' : 'offline'))
+
+    if (!this.isOnline && isOnline) {
+      this.listenToWS()
+    }
+    this.isOnline = isOnline
   }
   render() {
     return (
@@ -64,9 +113,10 @@ class App extends Component {
             onFinishedPlaying={() => this.setState({ isSoundAlert: false })}
           />
         }
-        <Detector polling={{ url: (__DEV__ ? 'https://api.rewards.nexlife.com.my' : '') + '/timestamp', enabled: true }} render={({ online: isOnline }) => {
+        <Detector polling={{ url: (__DEV__ ? 'http://localhost:1323' : '') + '/timestamp', enabled: true }} render={({ online: isOnline }) => {
+          this.setConnectivityStatus(isOnline)
           if (isOnline) return false
-          return <div style={{ position: 'absolute', top: 0, alignSelf: 'center', left: 0, right: 0, height: 50, backgroundColor: 'red', color: 'white', alignItems: 'center', justifyContent: 'center' }}> Opps, you are offline</div>
+          return <div style={offlineStyle}> Opps, you are offline</div>
         }} />
         <div className="App">
           <header className="App-header">
@@ -76,6 +126,7 @@ class App extends Component {
               <tbody>
                 <tr>
                   <th className="tableHeader">Rank #</th>
+                  {__DEV__ && <th>User ID</th>}
                   <th>Name</th>
                   <th>Points</th>
                 </tr>
@@ -83,6 +134,7 @@ class App extends Component {
                   return (
                     <tr key={index} id={`row${index}`}>
                       <td id={`cell${index}-{index1}`}>{index + 1}</td>
+                      {__DEV__ && <td id={`cell${index}-{index1_a}`}>{item.user_id}</td>}
                       <td id={`cell${index}-{index2}`}>{item.user_name}</td>
                       <td id={`cell${index}-{index3}`}>{item.point}</td>
                     </tr>
@@ -92,7 +144,9 @@ class App extends Component {
             </table>
           </header>
 
-          <ToastContainer pauseOnFocusLoss={true} />
+          <ToastContainer
+          // pauseOnFocusLoss={true} 
+          />
         </div>
       </>
     );
