@@ -54,7 +54,7 @@ class App extends Component {
       <>
         {
           this.state.isSoundAlert && <Sound
-            url="pop.mp3"
+            url={__DEV__ ? "pop.mp3" : "/public/html/leaderboard/pop.mp3"}
             autoLoad
             ignoreMobileRestrictions
             playStatus={Sound.status.PLAYING}
