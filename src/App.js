@@ -4,6 +4,7 @@ import './App.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Detector } from "react-detect-offline";
+import FloatingLabelInput from 'react-floating-label-input';
 import Sound from 'react-sound';
 
 const __DEV__ = !process.env.NODE_ENV || process.env.NODE_ENV === 'development'
@@ -15,6 +16,7 @@ class App extends Component {
   state = {
     data: [],
     isSoundAlert: false,
+    eventID: 'tmone'
   }
   constructor(p) {
     super(p)
@@ -86,7 +88,7 @@ class App extends Component {
       }
     };
 
-    request.open('GET', (__DEV__ ? 'http://localhost:1323' : '') + '/user_with_most_chop');
+    request.open('GET', (__DEV__ ? 'http://localhost:1323' : '') + '/user_with_most_chop?event_id=' + this.state.eventID);
     request.send();
   }
   isOnline = false
@@ -119,9 +121,28 @@ class App extends Component {
           return <div style={offlineStyle}> Opps, you are offline</div>
         }} />
         <div className="App">
-          <header className="App-header">
-            <img src={logo} className="App-logo" alt="logo" />
-
+          <header className="App-header" >
+            <table>
+              <tbody>
+                <tr>
+                  <td>
+                    <img src={logo} className="App-logo" alt="logo" />
+                  </td>
+                  <td>
+                    <FloatingLabelInput
+                      id="example-3"
+                      label="Event ID"
+                      refs={c => this.eventIDtextinput = c}
+                      onChange={() => this.setState({ eventID: this.eventIDtextinput.value }, this.getDataFromApi)}
+                      value={this.state.eventID}
+                    />
+                  </td>
+                </tr>
+              </tbody>
+              <br />
+              <br />
+              <br />
+            </table>
             <table>
               <tbody>
                 <tr>
