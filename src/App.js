@@ -156,7 +156,7 @@ class App extends Component {
                   </tr>
                   {this.state.data.map((item, index) => {
                     return (
-                      <tr key={index} id={`row${index}-`} className="table-row">
+                      <tr key={index} id={`row${index}-`} className="table-row" style={{ backgroundColor: index % 2 == 0 ? '#ddd' : '#fff' }}>
                         <td id={`cell${index}-{index1}`}>{index + 1}</td>
                         {__DEV__ && <td id={`cell${index}-{index1_a}`}>{item.user_id}</td>}
                         <td id={`cell${index}-{index2}`}>{item.user_name}<br /><i><div className="email">{item.user_email}</div></i></td>
