@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import logo from './header-logo.png';
 import './App.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -122,7 +122,10 @@ class App extends Component {
         }} />
         <div className="App">
           <header className="App-header" >
-            <table>
+            <img className="logo" src={logo} alt="logo" />
+            <div className="table-container">
+              <div className="table-title">TM ONE Convention 2019 Leaderboard</div>
+              {/* <table>
               <tbody>
                 <tr>
                   <td>
@@ -142,27 +145,28 @@ class App extends Component {
               <br />
               <br />
               <br />
-            </table>
-            <table>
-              <tbody>
-                <tr>
-                  <th className="tableHeader">Rank #</th>
-                  {__DEV__ && <th>User ID</th>}
-                  <th>Name</th>
-                  <th>Points</th>
-                </tr>
-                {this.state.data.map((item, index) => {
-                  return (
-                    <tr key={index} id={`row${index}`}>
-                      <td id={`cell${index}-{index1}`}>{index + 1}</td>
-                      {__DEV__ && <td id={`cell${index}-{index1_a}`}>{item.user_id}</td>}
-                      <td id={`cell${index}-{index2}`}>{item.user_name}</td>
-                      <td id={`cell${index}-{index3}`}>{item.point}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+            </table> */}
+              <table>
+                <tbody>
+                  <tr>
+                    <th className="tableHeader">Rank #</th>
+                    {__DEV__ && <th>User ID</th>}
+                    <th>Name</th>
+                    <th>Points</th>
+                  </tr>
+                  {this.state.data.map((item, index) => {
+                    return (
+                      <tr key={index} id={`row${index}-`} className="table-row">
+                        <td id={`cell${index}-{index1}`}>{index + 1}</td>
+                        {__DEV__ && <td id={`cell${index}-{index1_a}`}>{item.user_id}</td>}
+                        <td id={`cell${index}-{index2}`}>{item.user_name}<br /><i><div className="email">{item.user_email}</div></i></td>
+                        <td id={`cell${index}-{index3}`}>{item.point}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </header>
 
           <ToastContainer
