@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import logo from './header-logo.png';
+import banner from './banner.png';
 import './App.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -124,6 +125,8 @@ class App extends Component {
           <header className="App-header" >
             <img className="logo" src={logo} alt="logo" />
             <div className="table-container">
+              <img className="banner" src={banner} alt="banner" />
+
               <div className="table-title">TM ONE Convention 2019 Leaderboard</div>
               {/* <table>
               <tbody>
